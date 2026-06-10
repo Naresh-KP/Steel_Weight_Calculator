@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NISHA STEEL N ALLOYS | Steel Weight Calculator</title>
+    <style>
+      :root {
+        --primary: #2c3e50;
+        --accent: #3498db;
+        --bg-light: #f0f2f5;
+        --panel-alpha: rgba(255, 255, 255, 0.92);
+        --result-box: #dff9fb;
+        --danger: #e74c3c;
+        --secondary: #95a5a6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        color: var(--primary);
+        background-color: var(--bg-light);
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        background-size: 35%;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(240, 242, 245, 0.88);
+        z-index: -1;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: auto;
+        background: var(--panel-alpha);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-top: 8px solid var(--primary);
+        backdrop-filter: blur(8px);
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #ddd;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+      }
+
+      .logo-box {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+      .company-logo {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+      }
+
+      .main-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 20px;
+      }
+      .sidebar {
+        background: rgba(255, 255, 255, 0.5);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+      }
+      .side-input {
+        margin-bottom: 12px;
+      }
+      .side-input label {
+        display: block;
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 3px;
+        color: #555;
+      }
+      .side-input input {
+        width: 100%;
+        padding: 6px;
+        border: 1px solid #bbb;
+        border-radius: 4px;
+        margin-bottom: 5px;
+      }
+
+      section {
+        background: white;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+      h3 {
+        margin: 0 0 15px 0;
+        font-size: 13px;
+        color: var(--accent);
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+        text-transform: uppercase;
+      }
+
+      .calc-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: flex-end;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field label {
+        font-size: 11px;
+        font-weight: bold;
+        margin-bottom: 4px;
+        color: #555;
+      }
+
+      input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 105px;
+        font-size: 14px;
+      }
+      input[readonly] {
+        background-color: var(--result-box);
+        border: 1px solid #4dd0e1;
+        font-weight: bold;
+        color: #006064;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 8px;
+      }
+      button {
+        padding: 9px 15px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 12px;
+      }
+      button:hover {
+        opacity: 0.9;
+      }
+      .clr-btn {
+        background: var(--secondary);
+      }
+      .reset-btn {
+        background: var(--danger);
+        width: 100%;
+        margin-top: 10px;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo-box">
+          <div>
+            <h1 style="margin: 0; letter-spacing: 2px; font-size: 24px">
+              NISHA STEEL N ALLOYS
+            </h1>
+            <span style="font-size: 12px; color: #666; font-weight: bold"
+              >Technical Division | Steel Weight Calculator</span
+            >
+          </div>
+        </div>
+        <div style="font-weight: bold; color: #7f8c8d">
+          DIMENSIONS: mm | WEIGHT: Kg
+        </div>
+      </header>
+
+      <div class="main-layout">
+        <div class="sidebar">
+          <h3 style="color: var(--primary)">Reduction Ratio</h3>
+          <div class="side-input">
+            <label>Dia (Round)</label>
+            <input type="number" id="rr_dia" oninput="calcArea()" />
+            <input type="text" id="rr_dia_area" readonly placeholder="Area" />
+          </div>
+          <div class="side-input">
+            <label>Square (Side)</label>
+            <input type="number" id="rr_sq" oninput="calcArea()" />
+            <input type="text" id="rr_sq_area" readonly placeholder="Area" />
+          </div>
+          <button class="reset-btn" onclick="window.location.reload()">
+            RESET ALL
+          </button>
+        </div>
+
+        <div class="content">
+          <section>
+            <h3>RING</h3>
+            <div class="calc-row">
+              <div class="field">
+                <label>OD</label
+                ><input type="number" id="r_od" oninput="calcRing()" />
+              </div>
+              <div class="field">
+                <label>ID</label
+                ><input type="number" id="r_id" oninput="calcRing()" />
+              </div>
+              <div class="field">
+                <label>THK</label
+                ><input type="number" id="r_thk" oninput="calcRing()" />
+              </div>
+              <div class="field">
+                <label>Loss%</label
+                ><input type="number" id="r_loss" oninput="calcRing()" />
+              </div>
+              <div class="field">
+                <label>Tot Wt</label><input type="text" id="r_res" readonly />
+              </div>
+              <div class="btn-group">
+                <button onclick="calcRing()">Calculate</button>
+                <button
+                  class="clr-btn"
+                  onclick="
+                    clearFields(['r_od', 'r_id', 'r_thk', 'r_loss', 'r_res'])
+                  "
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3>ROUND BAR</h3>
+            <div class="calc-row">
+              <div class="field">
+                <label>Dia</label
+                ><input type="number" id="rb_d" oninput="calcRound()" />
+              </div>
+              <div class="field">
+                <label>Length</label
+                ><input type="number" id="rb_l" oninput="calcRound()" />
+              </div>
+              <div class="field">
+                <label>Loss%</label
+                ><input type="number" id="rb_ls" oninput="calcRound()" />
+              </div>
+              <div class="field">
+                <label>Tot Wt</label><input type="text" id="rb_res" readonly />
+              </div>
+              <div class="btn-group">
+                <button onclick="calcRound()">Calculate</button>
+                <button
+                  class="clr-btn"
+                  onclick="clearFields(['rb_d', 'rb_l', 'rb_ls', 'rb_res'])"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3>STEP SHAFT (SPINDLE)</h3>
+            <div class="calc-row" style="margin-bottom: 10px">
+              <div class="field">
+                <label>OD_1</label
+                ><input type="number" id="s1_d" oninput="calcStep()" />
+              </div>
+              <div class="field">
+                <label>OD_2</label
+                ><input type="number" id="s2_d" oninput="calcStep()" />
+              </div>
+              <div class="field">
+                <label>OD_3</label
+                ><input type="number" id="s3_d" oninput="calcStep()" />
+              </div>
+              <div class="field">
+                <label>OD_4</label
+                ><input type="number" id="s4_d" oninput="calcStep()" />
+              </div>
+              <div class="field">
+                <label>LG_1</label
+                ><input type="number" id="s1_l" oninput="calcStep()" />
+              </div>
+              <div class="field">
+                <label>LG_2</label
+                ><input type="number" id="s2_l" oninput="calcStep()" />
+            </div>
+            <div class="calc-row">
+              <div class="field">
+                <label>LG_3</label
+                ><input type="number" id="s3_l" oninput="calcStep()" />
+              </div>
+              <div class="field">
+                <label>LG_4</label
+                ><input type="number" id="s4_l" oninput="calcStep()" />
+              </div>
+              <div class="field">
+                <label>Total Wt</label><input type="text" id="s_res" readonly />
+              </div>
+              <div class="btn-group">
+                <button onclick="calcStep()">Calculate</button>
+                <button
+                  class="clr-btn"
+                  onclick="
+                    clearFields([
+                      's1_d',
+                      's1_l',
+                      's2_d',
+                      's2_l',
+                      's3_d',
+                      's3_l',
+                      's4_d',
+                      's4_l',
+                      's_res',
+                    ])
+                  "
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <div class="grid-2">
+            <section>
+              <h3>Find Length (SQ)</h3>
+              <div class="calc-row">
+                <div class="field">
+                  <label>Wt (kg)</label
+                  ><input type="number" id="fsq_w" oninput="findLenSq()" />
+                </div>
+                <div class="field">
+                  <label>Width</label
+                  ><input type="number" id="fsq_wi" oninput="findLenSq()" />
+                </div>
+                <div class="field">
+                  <label>Thk</label
+                  ><input type="number" id="fsq_t" oninput="findLenSq()" />
+                </div>
+                <div class="field">
+                  <label>Len</label><input type="text" id="fsq_res" readonly />
+                </div>
+                <div class="btn-group">
+                  <button onclick="findLenSq()">Calculate</button>
+                  <button
+                    class="clr-btn"
+                    onclick="
+                      clearFields(['fsq_w', 'fsq_wi', 'fsq_t', 'fsq_res'])
+                    "
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </section>
+            <section>
+              <h3>Find Length (RD)</h3>
+              <div class="calc-row">
+                <div class="field">
+                  <label>Wt (kg)</label
+                  ><input type="number" id="frd_w" oninput="findLenRd()" />
+                </div>
+                <div class="field">
+                  <label>Dia</label
+                  ><input type="number" id="frd_d" oninput="findLenRd()" />
+                </div>
+                <div class="field">
+                  <label>Len</label><input type="text" id="frd_res" readonly />
+                </div>
+                <div class="btn-group">
+                  <button onclick="findLenRd()">Calculate</button>
+                  <button
+                    class="clr-btn"
+                    onclick="clearFields(['frd_w', 'frd_d', 'frd_res'])"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const DENSITY = 0.00000785; // kg/mm³
+      const PIPE_CONST = 0.0000062; // for rings/pipes and shafts
+
+      // Clear fields utility
+      function clearFields(ids) {
+        ids.forEach((id) => {
+          document.getElementById(id).value = "";
+        });
+      }
+
+      // Ring / Pipe Logic
+      function calcRing() {
+        const od = parseFloat(document.getElementById("r_od").value);
+        const id = parseFloat(document.getElementById("r_id").value);
+        const len = parseFloat(document.getElementById("r_thk").value); // length
+        const loss = parseFloat(document.getElementById("r_loss").value) || 0;
+
+        if (od && len >= 0) {
+          const wt =
+            (Math.pow(od, 2) - Math.pow(id || 0, 2)) * len * PIPE_CONST;
+          const finalWt = wt + wt * (loss / 100);
+          document.getElementById("r_res").value = finalWt.toFixed(3);
+        } else {
+          document.getElementById("r_res").value = "";
+        }
+      }
+
+      // Round Bar Logic (Weight per meter × Length)
+      function calcRound() {
+        const wpm = parseFloat(document.getElementById("rb_d").value); // weight per meter
+        const l = parseFloat(document.getElementById("rb_l").value); // length in meters
+        const loss = parseFloat(document.getElementById("rb_ls").value) || 0;
+
+        if (wpm && l) {
+          let wt = wpm * l;
+          wt += wt * (loss / 100);
+          document.getElementById("rb_res").value = wt.toFixed(3);
+        } else {
+          document.getElementById("rb_res").value = "";
+        }
+      }
+
+      // Square / Rectangular Block Logic
+      function calcBlock() {
+        const w = parseFloat(document.getElementById("b_w").value);
+        const l = parseFloat(document.getElementById("b_l").value);
+        const h = parseFloat(document.getElementById("b_h").value);
+        const loss = parseFloat(document.getElementById("b_loss").value) || 0;
+
+        if (w && l && h) {
+          let wt = w * l * h * DENSITY;
+          wt += wt * (loss / 100);
+          document.getElementById("b_res").value = wt.toFixed(3);
+        } else {
+          document.getElementById("b_res").value = "";
+        }
+      }
+
+      // Step Shaft Logic
+     const CONST_FACTOR = 0.0000062;
+
+// Forward calculation: OD/LG → Weight
+function calcStep() {
+  let totalSum = 0;
+  let filledCount = 0;
+
+  for (let i = 1; i <= 4; i++) {
+    const d = parseFloat(document.getElementById(`s${i}_d`).value) || 0;
+    const l = parseFloat(document.getElementById(`s${i}_l`).value) || 0;
+    if (d > 0 && l > 0) {
+      totalSum += Math.pow(d, 2) * l;
+      filledCount++;
+    }
+  }
+
+  if (totalSum > 0) {
+    const wt = totalSum * CONST_FACTOR;
+    // Show result only when Calculate button is clicked
+    if (event && event.type === "click") {
+      document.getElementById("s_res").value = wt.toFixed(3);
+    }
+  } else {
+    // If OD/LG are empty but weight exists, use descending standard dimensions
+    const rawValue = document.getElementById("s_res").value.trim();
+    const targetWt = parseFloat(rawValue);
+    if (!isNaN(targetWt) && targetWt > 0) {
+      applyStandardDimensions(targetWt);
+    }
+  }
+}
+
+// Reverse calculation: Weight → adjust LG values proportionally
+function updateFromWeight() {
+  const rawValue = document.getElementById("s_res").value.trim();
+  const targetWt = parseFloat(rawValue);
+  if (isNaN(targetWt) || targetWt <= 0) return;
+
+  let currentSum = 0;
+  let hasValues = false;
+
+  for (let i = 1; i <= 4; i++) {
+    const d = parseFloat(document.getElementById(`s${i}_d`).value) || 0;
+    const l = parseFloat(document.getElementById(`s${i}_l`).value) || 0;
+    if (d > 0 && l > 0) {
+      currentSum += Math.pow(d, 2) * l;
+      hasValues = true;
+    }
+  }
+
+  if (hasValues) {
+    const desiredSum = targetWt / CONST_FACTOR;
+    const scale = desiredSum / currentSum;
+
+    // Scale LG values proportionally (ODs fixed)
+    for (let i = 1; i <= 4; i++) {
+      const l = parseFloat(document.getElementById(`s${i}_l`).value) || 0;
+      if (l > 0) {
+        document.getElementById(`s${i}_l`).value = (l * scale).toFixed(2);
+      }
+    }
+  } else {
+    // If no OD/LG values exist, apply descending standard dimensions
+    applyStandardDimensions(targetWt);
+  }
+}
+
+// Apply descending standard dimensions when only weight is given
+function applyStandardDimensions(targetWt) {
+  const standardODs = [100, 80, 60, 40];
+  const standardLGs = [200, 150, 120, 100];
+
+  let baseSum = 0;
+  for (let i = 0; i < 4; i++) {
+    baseSum += Math.pow(standardODs[i], 2) * standardLGs[i];
+  }
+
+  const desiredSum = targetWt / CONST_FACTOR;
+  const scale = desiredSum / baseSum;
+
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById(`s${i}_d`).value = standardODs[i - 1];
+    document.getElementById(`s${i}_l`).value = (standardLGs[i - 1] * scale).toFixed(2);
+  }
+
+  // Auto‑update weight field to confirm
+  document.getElementById("s_res").value = targetWt;
+}
+
+function clearFields(ids) {
+  ids.forEach(id => document.getElementById(id).value = "");
+}
+
+// Enable full editing of Total Weight
+window.onload = () => {
+  const resField = document.getElementById("s_res");
+  resField.removeAttribute("readonly");
+  resField.addEventListener("input", updateFromWeight);
+};
+
+
+
+      // Find Length for Square
+      function findLenSq() {
+        const wt = parseFloat(document.getElementById("fsq_w").value);
+        const width = parseFloat(document.getElementById("fsq_wi").value);
+        const thk = parseFloat(document.getElementById("fsq_t").value);
+        if (wt && width && thk) {
+          const area = width * thk;
+          document.getElementById("fsq_res").value = Math.round(
+            wt / (area * DENSITY),
+          );
+        } else {
+          document.getElementById("fsq_res").value = "";
+        }
+      }
+
+      // Find Length for Round
+      function findLenRd() {
+        const wt = parseFloat(document.getElementById("frd_w").value);
+        const dia = parseFloat(document.getElementById("frd_d").value);
+        if (wt && dia) {
+          const area = (Math.PI / 4) * Math.pow(dia, 2);
+          document.getElementById("frd_res").value = Math.round(
+            wt / (area * DENSITY),
+          );
+        } else {
+          document.getElementById("frd_res").value = "";
+        }
+      }
+    </script>
+  </body>
+</html>
